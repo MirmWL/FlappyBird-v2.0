@@ -1,4 +1,5 @@
-﻿using Inputs;
+﻿using System;
+using Inputs;
 
 using UnityEngine;
 
@@ -28,12 +29,18 @@ namespace Birds
             _movement.Move();
         }
 
-        private void OnTriggerEnter2D(Collider2D col)
+        private void OnTriggerEnter(Collider col)
         {
             if (col.TryGetComponent<Pipe>(out _))
                 _isDead = true;
         }
-        
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.collider.TryGetComponent<Bird>(out _))
+                _isDead = true;
+        }
+
         public bool IsDead()
         {
             return _isDead;

@@ -2,15 +2,15 @@
 
 public class Game : MonoBehaviour
 {
-    private IPredicate _isGameEnded;
+    private IPredicate[] _gameEnds;
     private GameUpdates _gameUpdates;
 
     private bool _isActive;
     
-    public void Init(IPredicate isGameEnded, GameUpdates gameUpdates)
+    public void Init(IPredicate[] gameEnds, GameUpdates gameUpdates)
     {
         _gameUpdates = gameUpdates;
-        _isGameEnded = isGameEnded;
+        _gameEnds = gameEnds;
 
         _isActive = true;
     }
@@ -22,12 +22,16 @@ public class Game : MonoBehaviour
         
         _gameUpdates.Update();
         
-        if (_isGameEnded.Execute())
-            EndGame();
+        foreach (var end in _gameEnds)
+        {
+            if(end.Execute())
+                EndGame();
+        }
     }
 
     private void EndGame()
     {
         _gameUpdates.StopUpdate();
+        Debug.Log("конец");
     }
 }

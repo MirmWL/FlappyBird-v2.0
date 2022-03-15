@@ -1,10 +1,12 @@
-﻿using Birds;
+﻿using System.Collections.Generic;
+using Birds;
 
 using UnityEngine;
 
 public class EntryPoint : MonoBehaviour
 {
-    [SerializeField] private Bird _bird;
+    [SerializeField] private Bird _bird1;
+    [SerializeField] private Bird _bird2;
     [SerializeField] private Game _game;
     [SerializeField] private Pipe _pipe;
     [SerializeField] private Camera _camera;
@@ -20,12 +22,20 @@ public class EntryPoint : MonoBehaviour
         var pipePool = new Storage<Pipe>(pipeFactory);
         var pipeGenerator = new PipeGenerator(pipePool, _pipeSpread, _startSpawnPosition.position, leftCameraBound, 10);
         
-        _bird.Init();
+        _bird1.Init();
+        _bird2.Init();
         
-        var gameUpdates = new GameUpdates();
-        gameUpdates.AddToUpdateList(_bird);
-        gameUpdates.AddToUpdateList(pipeGenerator);
+        var gameUpdates = new GameUpdates(new IGameUpdate[]
+        {
+            _bird1,
+            _bird2,
+            pipeGenerator
+        });
 
-        _game.Init(new BirdDead(_bird), gameUpdates);
+        _game.Init(new IPredicate[]
+        {
+            new BirdDead(_bird1),
+            new BirdDead(_bird2)
+        }, gameUpdates);
     }
 }
